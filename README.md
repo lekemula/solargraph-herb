@@ -32,10 +32,11 @@ plugins:
   - solargraph-herb
 ```
 
-Your editor must attach Solargraph to ERB buffers (filetype `eruby`) too, e.g. in Neovim:
+Your editor must attach Solargraph to ERB buffers too. Neovim gives `.html.erb` files the compound filetype `eruby.html`,
+which matches only when listed exactly:
 
 ```lua
-vim.lsp.config('solargraph', { filetypes = { 'ruby', 'eruby' } })
+vim.lsp.config('solargraph', { filetypes = { 'ruby', 'eruby', 'eruby.html' } })
 ```
 
 The plugin maps each `*.erb` file under `app/views/` to its Ruby: the code of its ERB tags at their original
