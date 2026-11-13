@@ -1,0 +1,5 @@
+include:
+  - "**/*.rb"
+  - "app/views/**/*.erb"
+plugins:
+  - solargraph-herb
