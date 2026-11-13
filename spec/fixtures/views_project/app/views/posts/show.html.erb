@@ -1,0 +1,14 @@
+<%# locals: (post:) %>
+<h1>Café — <%= post_title(post) %></h1>
+
+<%- if post.draft? -%>
+  <span>draft</span>
+<%- end -%>
+
+<% post.comments.each do |comment| %>
+  <p><%= comment.body %> · <%# a comment %></p>
+<% end %>
+
+<%= render partial: "posts/footer",
+           locals: { post: post } %>
+<%== raw post.footer %><% x = 1 %><%= x %>
