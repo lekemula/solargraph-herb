@@ -3,3 +3,7 @@ include:
   - "app/views/**/*.erb"
 plugins:
   - solargraph-herb
+reporters:
+  - rubocop
+  - require_not_found
+  - herb

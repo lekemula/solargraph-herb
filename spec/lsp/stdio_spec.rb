@@ -7,6 +7,7 @@ require_relative '../../script/lsp_probe'
 RSpec.describe 'solargraph stdio with the plugin', :lsp do
   root = File.expand_path('../fixtures/views_project', __dir__)
   view = 'app/views/posts/show.html.erb'
+  broken_view = 'app/views/posts/_byline.html.erb'
 
   before(:all) do
     @probe = LspProbe.start(
@@ -23,6 +24,20 @@ RSpec.describe 'solargraph stdio with the plugin', :lsp do
 
   it 'reports no diagnostics on the view' do
     expect(@probe.diagnostics(view)).to eq []
+  end
+
+  it 'reports the Herb parse error of a broken view at its range' do
+    @probe.open(broken_view)
+
+    expect(@probe.diagnostics(broken_view)).to eq [
+      {
+        'range' => { 'start' => { 'line' => 0, 'character' => 25 }, 'end' => { 'line' => 0, 'character' => 31 } },
+        'severity' => 1,
+        'source' => 'herb',
+        'code' => 'MissingClosingTagError',
+        'message' => "Opening tag `<span>` at (1:26) doesn't have a matching closing tag `</span>` in the same scope."
+      }
+    ]
   end
 
   it 'formats the view without edits' do
