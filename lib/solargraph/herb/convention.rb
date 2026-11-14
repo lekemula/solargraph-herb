@@ -8,10 +8,16 @@ module Solargraph
     # blanked, so it keeps the view's line count and every line's character length.
     class Convention < Solargraph::Convention::Base
       # @param filename [String]
+      # @return [Boolean] whether the plugin maps the file, an ERB template under app/views/
+      def self.view?(filename)
+        filename.end_with?('.erb') && filename.include?('app/views/')
+      end
+
+      # @param filename [String]
       # @param code [String]
       # @return [String, nil] the Shadow Source of an ERB view
       def transform_source(filename, code)
-        return unless view?(filename)
+        return unless Convention.view?(filename)
 
         ruby = character_aligned(code, ::Herb.extract_ruby(code, preserve_positions: true, semicolons: true))
         return ruby if ruby.lines.map(&:length) == code.lines.map(&:length)
@@ -22,12 +28,6 @@ module Solargraph
       end
 
       private
-
-      # @param filename [String]
-      # @return [Boolean]
-      def view?(filename)
-        filename.end_with?('.erb') && filename.include?('app/views/')
-      end
 
       # Herb keeps byte offsets, so it blanks a multibyte character into one space per byte, while Solargraph
       # positions count characters. Each blanked character becomes a single space.
