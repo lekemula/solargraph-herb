@@ -77,4 +77,28 @@ RSpec.describe Solargraph::Herb::Reporter, '#diagnose' do
     expect(diagnose("<div>\n")).to eq []
     expect(Solargraph.logger).to have_received(:warn).with(/show\.html\.erb.*RuntimeError: boom/)
   end
+
+  it 'leaves HTML nesting alone without herb:nesting' do
+    expect(diagnose("<p><div>x</div></p>\n")).to eq []
+  end
+
+  context 'with herb:nesting' do
+    subject(:reporter) { described_class.new('nesting') }
+
+    it 'reports invalid HTML nesting' do
+      expect(diagnose("<p><div>x</div></p>\n")).to eq [
+        {
+          range: range(0, 3, 0, 15),
+          severity: Solargraph::Diagnostics::Severities::ERROR,
+          source: 'herb',
+          code: 'InvalidNestingError',
+          message: 'Block element <div> cannot be nested inside <p> at line 1'
+        }
+      ]
+    end
+
+    it 'reports parse errors too' do
+      expect(codes_and_ranges("<div>\n")).to eq [['MissingClosingTagError', range(0, 0, 0, 5)]]
+    end
+  end
 end
