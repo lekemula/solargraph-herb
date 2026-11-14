@@ -1,13 +1,27 @@
 # Solargraph::Herb - A [Solargraph](https://solargraph.org/) plugin for Ruby in Rails ERB views
 
 > [!WARNING]
-> Work in progress. The plugin depends on changes that are not released yet:
-> - Solargraph: [castwide/solargraph#1489](https://github.com/castwide/solargraph/pull/1489) and the follow-up
->   [lekemula/solargraph#5](https://github.com/lekemula/solargraph/pull/5) (`herb-source-closure`) stacked on it.
->   Until they are merged, use Solargraph from that branch, as shown below.
+> Work in progress. The plugin depends on changes that are not released yet.
+>
+> Open upstream:
+> - Solargraph: [#1489](https://github.com/castwide/solargraph/pull/1489) (transformed sources, which this plugin is
+>   built on), [#1497](https://github.com/castwide/solargraph/pull/1497) (factory parameters passed as keyword
+>   arguments), [#1498](https://github.com/castwide/solargraph/pull/1498) (every assignment of a variable on
+>   go-to-definition) and [#1499](https://github.com/castwide/solargraph/pull/1499) (convention pins of files that are
+>   not open).
+> - solargraph-rails: [#279](https://github.com/iftheshoefritz/solargraph-rails/pull/279) (routes DSL go-to-definition)
+>   and [#280](https://github.com/iftheshoefritz/solargraph-rails/pull/280) (route URL helpers).
+>
+> Stacked on those, waiting for them to merge:
+> - Solargraph: [lekemula/solargraph#5](https://github.com/lekemula/solargraph/pull/5) (bind a transformed source to a
+>   closure) and [lekemula/solargraph#11](https://github.com/lekemula/solargraph/pull/11) (limit where a factory
+>   parameter is visible).
 > - solargraph-rails binds a view's Ruby to its controller, helpers, ivars and locals:
->   [lekemula/solargraph-rails#2](https://github.com/lekemula/solargraph-rails/pull/2). Without it, the plugin maps
->   the Ruby of a view, but hover and go-to-definition find little.
+>   [#2](https://github.com/lekemula/solargraph-rails/pull/2) (views bound to their controllers),
+>   [#3](https://github.com/lekemula/solargraph-rails/pull/3) (route helpers in views),
+>   [#4](https://github.com/lekemula/solargraph-rails/pull/4) (partials) and
+>   [#5](https://github.com/lekemula/solargraph-rails/pull/5) (every assignment of view variables). Without it, the
+>   plugin maps the Ruby of a view, but hover and go-to-definition find little.
 
 This gem brings Solargraph go-to-definition and hover to the Ruby in Rails ERB views, using
 [Herb](https://herb-tools.dev) to extract that Ruby from the templates. With the `herb` reporter, Herb's template
@@ -19,11 +33,12 @@ https://github.com/user-attachments/assets/f29b9367-3205-4517-8cbc-9f0632973f46
 
 ## Installation
 
-Add it to your Gemfile. Until those are released, take Solargraph from the `herb-source-closure` branch:
+Add it to your Gemfile. Until those are released, take Solargraph and solargraph-rails from the top of their stacks:
 
 ```ruby
 group :development do
-  gem 'solargraph', github: 'lekemula/solargraph', branch: 'herb-source-closure', require: false
+  gem 'solargraph', github: 'lekemula/solargraph', branch: 'herb-factory-visibility', require: false
+  gem 'solargraph-rails', github: 'lekemula/solargraph-rails', branch: 'variable-definitions', require: false
   gem 'solargraph-herb', github: 'lekemula/solargraph-herb', require: false
 end
 ```
@@ -36,6 +51,7 @@ include:
   - "**/*.rb"
   - "app/views/**/*.erb"
 plugins:
+  - solargraph-rails
   - solargraph-herb
 ```
 
