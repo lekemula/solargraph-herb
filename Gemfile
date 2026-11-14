@@ -16,8 +16,8 @@ gem 'simplecov'           # Code coverage
 gem 'simplecov-cobertura' # Code coverage
 
 # Solargraph with the unreleased hooks this plugin needs: transform_source (castwide/solargraph#1489) and binding a
-# transformed source to a closure. A local checkout of the `herb-variable-definitions` branch (stacked on `cucumber`) when
-# there is one (or SOLARGRAPH_PATH), else that branch on GitHub
+# transformed source to a closure. A local checkout of the `herb-variable-definitions` branch (stacked on `cucumber`)
+# when there is one (or SOLARGRAPH_PATH), else that branch on GitHub
 solargraph_path = ENV.fetch('SOLARGRAPH_PATH') do
   File.expand_path('~/Projects/open_source/solargraph__worktrees/herb-variable-definitions')
 end
