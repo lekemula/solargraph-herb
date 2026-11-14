@@ -54,13 +54,12 @@ wrong with the template, such as an unclosed tag (`MissingClosingTagError`), an 
 reporters:
   - rubocop
   - require_not_found
-  - update_errors
   - herb
 ```
 
-The `herb` reporter leaves out Herb's Ruby syntax errors inside tags, which are Solargraph's to report. Solargraph's
-`update_errors` reporter, which does not run by default, flags the line of an edit that breaks the Ruby mapped from the
-view. A syntax error already in the view when it opens gets no diagnostic.
+The `herb` reporter also reports Ruby syntax errors inside tags (`RubyParseError`), once each. While the template has
+an error of its own, such as an unclosed `<% if %>`, it reports only that error: the Ruby errors it causes are echoes,
+and any other Ruby error shows once the template is fixed.
 
 Use `herb:nesting` instead of `herb` to also check HTML nesting, such as a `<div>` inside a `<p>` or an `<a>` inside
 another `<a>`.

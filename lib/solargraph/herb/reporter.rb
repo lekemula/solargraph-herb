@@ -6,9 +6,9 @@ module Solargraph
   module Herb
     # Reports Herb's parse errors in ERB views, at their positions in the view.
     #
-    # Herb's Ruby syntax errors are left out: they are Ruby diagnostics, Solargraph's own to report on the Shadow
-    # Source, which keeps the view's positions. The `herb:nesting` reporter arg adds the HTML nesting checks of Herb's
-    # engine, such as a block element inside a `<p>`.
+    # Ruby syntax errors inside tags are reported once each, at their narrowest range, and only while the template
+    # itself parses: a template error explains them. The `herb:nesting` reporter arg adds the HTML nesting checks of
+    # Herb's engine, such as a block element inside a `<p>`.
     class Reporter < Solargraph::Diagnostics::Base
       # @param source [Solargraph::Source]
       # @param _api_map [Solargraph::ApiMap]
@@ -29,11 +29,26 @@ module Solargraph
       # @param result [::Herb::ParseResult]
       # @return [Array<Hash>]
       def parse_errors(result)
-        result.errors.filter_map do |error|
-          next if error.is_a?(::Herb::Errors::RubyParseError)
+        ruby, template = result.errors.partition { |error| error.is_a?(::Herb::Errors::RubyParseError) }
+        # A template error such as an unclosed `<% if %>` breaks the Ruby too, so its Ruby errors are only echoes
+        reported = template.empty? ? narrowest_per_message(ruby) : template
+        reported.map { |error| diagnostic(error.location, error.error_name, error.message) }
+      end
 
-          diagnostic(error.location, error.error_name, error.message)
+      # Herb can report a Ruby syntax error twice, at the tag and at the token
+      #
+      # @param errors [Array<::Herb::Errors::RubyParseError>]
+      # @return [Array<::Herb::Errors::RubyParseError>]
+      def narrowest_per_message(errors)
+        errors.group_by(&:message).values.map do |same|
+          same.min_by { |error| [error.location.end.line - error.location.start.line, span(error.location)] }
         end
+      end
+
+      # @param location [::Herb::Location]
+      # @return [Integer]
+      def span(location)
+        location.end.column - location.start.column
       end
 
       # @param result [::Herb::ParseResult]

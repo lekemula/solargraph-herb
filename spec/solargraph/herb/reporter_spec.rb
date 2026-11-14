@@ -66,8 +66,17 @@ RSpec.describe Solargraph::Herb::Reporter, '#diagnose' do
     expect(codes_and_ranges("<% if post.draft? %>\n  <p>x</p>\n")).to eq [['MissingERBEndTagError', range(0, 0, 0, 20)]]
   end
 
-  it 'leaves a Ruby syntax error in a tag out' do
-    expect(diagnose("<p><%= post_title( %></p>\n")).to eq []
+  it 'reports a Ruby syntax error in a tag once' do
+    expect(codes_and_ranges("<p><%= post_title( %></p>\n")).to eq [['RubyParseError', range(0, 3, 0, 21)]]
+  end
+
+  it 'reports a Ruby syntax error at its narrowest range' do
+    expect(codes_and_ranges("<% x = [1, %>\n<p>ok</p>\n")).to eq [['RubyParseError', range(0, 9, 0, 10)]]
+  end
+
+  it 'leaves Ruby syntax errors out while the template has an error of its own' do
+    expect(codes_and_ranges("<% if post.draft? %>\n  <p><%= post_title( %></p>\n"))
+      .to eq [['MissingERBEndTagError', range(0, 0, 0, 20)]]
   end
 
   it 'logs a Herb failure and reports nothing, so diagnostics stay on' do
