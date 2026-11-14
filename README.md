@@ -71,6 +71,8 @@ and any other Ruby error shows once the template is fixed.
 Use `herb:nesting` instead of `herb` to also check HTML nesting, such as a `<div>` inside a `<p>` or an `<a>` inside
 another `<a>`.
 
+![Herb diagnostics for broken ERB views in Neovim](.github/assets/herb-errors.png)
+
 ### Keep RuboCop off `.erb` files
 
 Solargraph versions without a guard in the `rubocop` reporter for mapped sources lint the Ruby mapped from a view,
