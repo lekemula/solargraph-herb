@@ -43,10 +43,33 @@ The plugin maps each `*.erb` file under `app/views/` to its Ruby: the code of it
 positions, with the HTML, the comments and the tag delimiters blanked. Solargraph does not typecheck or format that
 code.
 
+### Report Herb parse errors
+
+The plugin registers a `herb` diagnostics reporter. It parses each open view with Herb and reports what Herb finds
+wrong with the template, such as an unclosed tag (`MissingClosingTagError`), an ERB tag missing its `%>`
+(`UnclosedERBTagError`) or an `<% if %>` without its `<% end %>` (`MissingERBEndTagError`). Add it to the reporters in
+`.solargraph.yml`, next to the ones you use:
+
+```yaml
+reporters:
+  - rubocop
+  - require_not_found
+  - update_errors
+  - herb
+```
+
+The `herb` reporter leaves out Herb's Ruby syntax errors inside tags, which are Solargraph's to report. Solargraph's
+`update_errors` reporter, which does not run by default, flags the line of an edit that breaks the Ruby mapped from the
+view. A syntax error already in the view when it opens gets no diagnostic.
+
+Use `herb:nesting` instead of `herb` to also check HTML nesting, such as a `<div>` inside a `<p>` or an `<a>` inside
+another `<a>`.
+
 ### Keep RuboCop off `.erb` files
 
-Solargraph's `rubocop` reporter lints the Ruby mapped from a view, and reports offenses such as trailing whitespace
-where the HTML was blanked, unless your `.rubocop.yml` excludes ERB files:
+Solargraph versions without a guard in the `rubocop` reporter for mapped sources lint the Ruby mapped from a view,
+and report offenses such as trailing whitespace where the HTML was blanked. With those versions, exclude ERB files in
+your `.rubocop.yml`:
 
 ```yaml
 AllCops:
