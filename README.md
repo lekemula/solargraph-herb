@@ -1,14 +1,21 @@
 # Solargraph::Herb - A [Solargraph](https://solargraph.org/) plugin for Ruby in Rails ERB views
 
 > [!WARNING]
-> Work in progress: the plugin maps the Ruby of ERB views, but does not bind it to the view yet, so hover and
-> go-to-definition find little in a view so far. It depends on Solargraph changes that are
-> not released yet: [castwide/solargraph#1489](https://github.com/castwide/solargraph/pull/1489) and the follow-up
-> `herb-source-closure` branch stacked on it. Until they are merged,
-> use Solargraph from that branch, as shown below.
+> Work in progress. The plugin depends on changes that are not released yet:
+> - Solargraph: [castwide/solargraph#1489](https://github.com/castwide/solargraph/pull/1489) and the follow-up
+>   [lekemula/solargraph#5](https://github.com/lekemula/solargraph/pull/5) (`herb-source-closure`) stacked on it.
+>   Until they are merged, use Solargraph from that branch, as shown below.
+> - solargraph-rails binds a view's Ruby to its controller, helpers, ivars and locals:
+>   [lekemula/solargraph-rails#2](https://github.com/lekemula/solargraph-rails/pull/2). Without it, the plugin maps
+>   the Ruby of a view, but hover and go-to-definition find little.
 
-This gem aims to bring Solargraph go-to-definition and hover to the Ruby in Rails ERB views, using
-[Herb](https://herb-tools.dev) to extract that Ruby from the templates.
+This gem brings Solargraph go-to-definition and hover to the Ruby in Rails ERB views, using
+[Herb](https://herb-tools.dev) to extract that Ruby from the templates. With the `herb` reporter, Herb's template
+errors show as diagnostics too.
+
+## Demo
+
+https://github.com/user-attachments/assets/f29b9367-3205-4517-8cbc-9f0632973f46
 
 ## Installation
 
